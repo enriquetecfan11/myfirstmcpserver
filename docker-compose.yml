@@ -1,0 +1,37 @@
+
+services:
+  mcp-server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3333:3333"
+    environment:
+      - NODE_ENV=development
+      - PORT=3333
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    command: npm run dev
+    restart: unless-stopped
+    networks:
+      - mcp-net
+
+  n8n:
+    image: n8nio/n8n:next
+    ports:
+      - "5678:5678"
+    environment:
+      - N8N_BASIC_AUTH_ACTIVE=true
+      - N8N_BASIC_AUTH_USER=user
+      - N8N_BASIC_AUTH_PASSWORD=password
+      - N8N_COMMUNITY_PACKAGES_ALLOW_TOOL_USAGE=true
+    volumes:
+      - ~/.n8n:/root/.n8n
+    restart: unless-stopped
+    networks:
+      - mcp-net
+
+networks:
+  mcp-net:
+    driver: bridge
