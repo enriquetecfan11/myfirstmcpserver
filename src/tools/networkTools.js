@@ -10,11 +10,24 @@ export const initializeNetworkTools = () => {
         const response = await fetch(url);
         const content = await response.text();
         return {
-          content: [{ type: "text", text: `Respuesta: ${content}` }]
+          content: [{ 
+            type: "text", 
+            text: JSON.stringify({
+              status: "success",
+              statusCode: response.status,
+            }, null, 2)
+          }]
         };
       } catch (error) {
         return {
-          content: [{ type: "text", text: `Error al hacer ping: ${error.message}` }]
+          content: [{ 
+            type: "text", 
+            text: JSON.stringify({
+              status: "error",
+              error: error.message,
+              url: url
+            }, null, 2)
+          }]
         };
       }
     }
